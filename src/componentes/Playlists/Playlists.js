@@ -27,20 +27,18 @@ function Playlists() {
       Authorization: "luana-trevizani-ammal"
     }
   };
-  const getAllPlaylists = () => {
-    axios
-      .get(
+  const getAllPlaylists = async () => {
+    try {
+      const response = await axios.get(
         "https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists",
         header
-      )
-      .then((response) => {
-        console.log(response.data);
-        setPlaylists(response.data.result.list);
-      })
-      .catch((error) => {
-        console.log("Deu erro");
-        console.log(error);
-      });
+      );
+      console.log(response.data);
+      setPlaylists(response.data.result.list);
+    } catch (error) {
+      console.log("Deu erro");
+      console.log(error);
+    }
   };
   useEffect(() => {
     getAllPlaylists();
