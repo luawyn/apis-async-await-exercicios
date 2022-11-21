@@ -39,26 +39,24 @@ export default function Musicas(props) {
       Authorization: "luana-trevizani-ammal"
     }
   };
-  const getPlaylistTracks = () => {
-    axios
-      .get(
+  const getPlaylistTracks = async () => {
+    try {
+      const response = await axios.get(
         `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks
       `,
         header
-      )
-      .then((response) => {
-        console.log(response.data.result.tracks);
-        setMusicas(response.data.result.tracks);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+      );
+      console.log(response.data.result.tracks);
+      setMusicas(response.data.result.tracks);
+    } catch (error) {
+      console.log(error);
+    }
   };
   useEffect(() => {
     getPlaylistTracks();
   }, []);
 
-  const addTrackToPlaylist = () => {
+  const addTrackToPlaylist = async () => {
     const body = {
       artist: inputArtista,
       name: inputMusica,
@@ -69,35 +67,31 @@ export default function Musicas(props) {
         Authorization: "luana-trevizani-ammal"
       }
     };
-    axios
-      .post(
+    try {
+      const response = await axios.post(
         `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks
         `,
         body,
         header
-      )
-      .then((response) => {
-        console.log(response.data.result.tracks);
-        getPlaylistTracks();
-      })
-      .catch((error) => {
-        console.log(error.mensage);
-      });
+      );
+      console.log(response.data.result.tracks);
+      getPlaylistTracks();
+    } catch (error) {
+      console.log(error.mensage);
+    }
   };
-  const deleteTrack = (id) => {
-    axios
-      .delete(
+  const deleteTrack = async (id) => {
+    try {
+      const response = await axios.delete(
         `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${id}
-    `,
+      `,
         header
-      )
-      .then((response) => {
-        console.log(response.data);
-        getPlaylistTracks();
-      })
-      .catch((error) => {
-        console.log(error.mensage);
-      });
+      );
+      console.log(response.data);
+      getPlaylistTracks();
+    } catch (error) {
+      console.log(error.mensage);
+    }
   };
 
   return (
