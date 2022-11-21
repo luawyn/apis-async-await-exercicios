@@ -7,6 +7,7 @@ import {
   InputMusica,
   Musica
 } from "./styled";
+import { header, BASE_URL } from "../../constants/constants";
 
 const musicasLocal = [
   {
@@ -34,22 +35,17 @@ export default function Musicas(props) {
   const [inputArtista, setInputArtista] = useState("");
   const [inputMusica, setInputMusica] = useState("");
   const [inputUrl, setInputUrl] = useState("");
-  const header = {
-    headers: {
-      Authorization: "luana-trevizani-ammal"
-    }
-  };
+
   const getPlaylistTracks = async () => {
     try {
       const response = await axios.get(
-        `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks
+        `${BASE_URL}${props.playlist.id}/tracks
       `,
         header
       );
-      console.log(response.data.result.tracks);
       setMusicas(response.data.result.tracks);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
   useEffect(() => {
@@ -62,28 +58,22 @@ export default function Musicas(props) {
       name: inputMusica,
       url: inputUrl
     };
-    const header = {
-      headers: {
-        Authorization: "luana-trevizani-ammal"
-      }
-    };
     try {
-      const response = await axios.post(
-        `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks
+      await axios.post(
+        `${BASE_URL}${props.playlist.id}/tracks
         `,
         body,
         header
       );
-      console.log(response.data.result.tracks);
       getPlaylistTracks();
     } catch (error) {
-      console.log(error.mensage);
+      console.log(error.response);
     }
   };
   const deleteTrack = async (id) => {
     try {
       const response = await axios.delete(
-        `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${id}
+        `${BASE_URL}${props.playlist.id}/tracks/${id}
       `,
         header
       );
@@ -91,6 +81,15 @@ export default function Musicas(props) {
       getPlaylistTracks();
     } catch (error) {
       console.log(error.mensage);
+    }
+  };
+
+  const deletePlaylist = async () => {
+    try {
+      await axios.delete(`${BASE_URL}${props.playlist.id}`, header);
+      props.getAllPlaylists();
+    } catch (error) {
+      console.log(error.response);
     }
   };
 
@@ -130,8 +129,9 @@ export default function Musicas(props) {
           }}
           placeholder="url"
         />
-        <Botao onClick={addTrackToPlaylist}>Adicionar musica</Botao>
+        <Botao onClick={addTrackToPlaylist}>Add music</Botao>
       </ContainerInputs>
+      <button onClick={deletePlaylist}>Delete Playlist</button>
     </ContainerMusicas>
   );
 }
